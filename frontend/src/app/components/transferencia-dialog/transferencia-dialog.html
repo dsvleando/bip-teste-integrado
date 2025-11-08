@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>Transferir Valor</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="transferenciaForm" class="transferencia-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Benefício de Origem</mat-label>
+      <input matInput [formControl]="origemControl" [matAutocomplete]="origemAuto" placeholder="Digite para buscar...">
+      <mat-autocomplete #origemAuto="matAutocomplete" [displayWith]="displayBeneficio">
+        @for (beneficio of origemOptions$ | async; track beneficio.id) {
+          <mat-option [value]="beneficio">
+            {{ beneficio.nome }}
+            @if (beneficio.descricao) {
+              <span class="descricao"> - {{ beneficio.descricao }}</span>
+            }
+          </mat-option>
+        }
+      </mat-autocomplete>
+      @if (origemControl.hasError('required') && origemControl.touched) {
+        <mat-error>{{ getErrorMessage('origem') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Benefício de Destino</mat-label>
+      <input matInput [formControl]="destinoControl" [matAutocomplete]="destinoAuto" placeholder="Digite para buscar...">
+      <mat-autocomplete #destinoAuto="matAutocomplete" [displayWith]="displayBeneficio">
+        @for (beneficio of destinoOptions$ | async; track beneficio.id) {
+          <mat-option [value]="beneficio">
+            {{ beneficio.nome }}
+            @if (beneficio.descricao) {
+              <span class="descricao"> - {{ beneficio.descricao }}</span>
+            }
+          </mat-option>
+        }
+      </mat-autocomplete>
+      @if (destinoControl.hasError('required') && destinoControl.touched) {
+        <mat-error>{{ getErrorMessage('destino') }}</mat-error>
+      }
+      @if (destinoControl.hasError('sameBeneficio')) {
+        <mat-error>{{ getErrorMessage('destino') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <app-currency-input formControlName="amount" label="Valor" [required]="true" [min]="0.01"></app-currency-input>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancelar()">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="transferir()" [disabled]="!transferenciaForm.valid">
+    Transferir
+  </button>
+</mat-dialog-actions>

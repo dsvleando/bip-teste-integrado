@@ -1,0 +1,121 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Benefícios</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="actions">
+        <button mat-raised-button color="primary" (click)="criarNovo()" class="btn-primary">
+          <mat-icon>add</mat-icon>
+          Novo Benefício
+        </button>
+        <button mat-raised-button color="accent" (click)="transferir()" class="btn-secondary">
+          <mat-icon>swap_horiz</mat-icon>
+          Transferir
+        </button>
+      </div>
+
+      @if (loading) {
+        <div class="loading">Carregando...</div>
+      } @else {
+        <!-- Tabela para Desktop -->
+        <div class="table-view">
+          <div class="table-wrapper">
+            <table mat-table [dataSource]="beneficios" class="mat-elevation-z8">
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let beneficio">{{ beneficio.id }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="nome">
+                <th mat-header-cell *matHeaderCellDef>Nome</th>
+                <td mat-cell *matCellDef="let beneficio">{{ beneficio.nome }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="descricao">
+                <th mat-header-cell *matHeaderCellDef>Descrição</th>
+                <td mat-cell *matCellDef="let beneficio">{{ beneficio.descricao || '-' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="valor">
+                <th mat-header-cell *matHeaderCellDef>Valor</th>
+                <td mat-cell *matCellDef="let beneficio" class="valor-cell">{{ formatarMoeda(beneficio.valor) }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="ativo">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let beneficio">
+                  <span class="status-badge" [class.ativo]="beneficio.ativo" [class.inativo]="!beneficio.ativo">
+                    {{ beneficio.ativo ? 'Ativo' : 'Inativo' }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="acoes">
+                <th mat-header-cell *matHeaderCellDef>Ações</th>
+                <td mat-cell *matCellDef="let beneficio" class="acoes-cell">
+                  <button mat-icon-button color="primary" (click)="editar(beneficio)" title="Editar">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="remover(beneficio)" title="Remover">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- Card View para Mobile -->
+        <div class="card-view">
+          @for (beneficio of beneficios; track beneficio.id) {
+            <div class="beneficio-card mat-elevation-z2">
+              <div class="card-header">
+                <div class="card-title">{{ beneficio.nome }}</div>
+                <span class="status-badge" [class.ativo]="beneficio.ativo" [class.inativo]="!beneficio.ativo">
+                  {{ beneficio.ativo ? 'Ativo' : 'Inativo' }}
+                </span>
+              </div>
+              
+              <div class="card-body">
+                <div class="card-row">
+                  <span class="card-label">ID:</span>
+                  <span class="card-value">{{ beneficio.id }}</span>
+                </div>
+                <div class="card-row">
+                  <span class="card-label">Descrição:</span>
+                  <span class="card-value">{{ beneficio.descricao || '-' }}</span>
+                </div>
+                <div class="card-row">
+                  <span class="card-label">Valor:</span>
+                  <span class="card-value valor">{{ formatarMoeda(beneficio.valor) }}</span>
+                </div>
+              </div>
+
+              <div class="card-actions">
+                <button mat-icon-button color="primary" (click)="editar(beneficio)" title="Editar">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="remover(beneficio)" title="Remover">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+        
+        <mat-paginator
+          [length]="totalElements"
+          [pageSize]="pageSize"
+          [pageIndex]="pageIndex"
+          [pageSizeOptions]="[5, 10, 20, 50]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

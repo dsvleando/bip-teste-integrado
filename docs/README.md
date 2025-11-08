@@ -8,8 +8,14 @@ Criar solução completa em camadas (DB, EJB, Backend, Frontend), corrigindo bug
 - ejb-module/: serviço EJB com bug a ser corrigido
 - backend-module/: backend Spring Boot
 - frontend/: app Angular
+<<<<<<< HEAD
 - docs/: instruções e critérios
 - .github/workflows/: CI
+=======
+- docker/: Dockerfiles e configurações Docker
+- docs/: instruções e critérios
+- .github/workflows/: CI/CD
+>>>>>>> c918120 (Teste Integrado)
 
 ## ✅ Tarefas do candidato
 1. Executar db/schema.sql e db/seed.sql

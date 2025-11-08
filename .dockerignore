@@ -1,0 +1,46 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker (mantém docker/ pois contém Dockerfiles necessários)
+# Apenas ignora arquivos temporários do Docker
+*.dockerfile.bak
+docker-compose.override.yml
+
+# Documentation
+*.md
+docs/
+
+# IDE
+.idea
+.vscode
+*.iml
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node modules (frontend)
+frontend/node_modules
+frontend/dist
+frontend/.angular
+
+# Maven (serão reconstruídos no container)
+backend-module/target
+ejb-module/target
+**/.mvn
+**/mvnw
+**/mvnw.cmd
+
+# Logs
+*.log
+logs/
+
+# CI/CD
+.github/workflows/*.yml.bak
+
+

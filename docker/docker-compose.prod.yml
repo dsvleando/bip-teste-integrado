@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  backend:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAME:-bip-teste-integrado}-backend:latest
+    container_name: bip-backend-prod
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:beneficiosdb
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.h2.Driver
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=
+      - SERVER_PORT=8080
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api-docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - bip-network
+    restart: unless-stopped
+
+  frontend:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAME:-bip-teste-integrado}-frontend:latest
+    container_name: bip-frontend-prod
+    ports:
+      - "4200:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - bip-network
+    restart: unless-stopped
+    environment:
+      - FRONTEND_API_URL=${FRONTEND_API_URL:-/api/v1}
+      - BACKEND_API_HOST=${BACKEND_API_HOST:-backend}
+      - BACKEND_API_PORT=${BACKEND_API_PORT:-8080}
+
+networks:
+  bip-network:
+    driver: bridge
+
+
